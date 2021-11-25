@@ -1,9 +1,9 @@
 package server
 
 import (
-	"fmt"
 	"collect/api/db"
-	"collect/api/middleware"
+	v1 "collect/api/v1"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,9 +12,16 @@ func NewRouter() *gin.Engine {
 
 	router := gin.New()
 	router.Use(gin.Logger())
-	router.Use(middleware.IsAuthorized())
+	// router.Use(middleware.IsAuthorized())
 
-	collectAPIGroupV1 := router.Group("api/v1") {
-		
+	collectAPIGroupV1 := router.Group("api/v1")
+	{
+		collectControllerV1 := v1.NewCollectController(dbConnector)
+		collectAPIGroupV1.GET("/getForm", collectControllerV1.GetFormHandler)
+		collectAPIGroupV1.GET("/getQuestion", collectControllerV1.GetQuestionHandler)
+		collectAPIGroupV1.GET("/getResponse", collectControllerV1.GetResponseHandler)
+		collectAPIGroupV1.GET("/getResponseBank", collectControllerV1.GetResponseBankHandler)
 	}
+
+	return router
 }
